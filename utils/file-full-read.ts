@@ -7,7 +7,6 @@ export async function fullRead(
 ): Promise<Buffer> {
   const buf: Buffer = Buffer.alloc(length);
   let bytesRead = 0;
-  console.log(`length=${length}`);
   while (bytesRead < length) {
     const read: number = (await file.read(
       buf,

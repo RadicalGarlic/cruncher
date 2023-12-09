@@ -2,6 +2,8 @@ import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
 import * as path from 'node:path';
 
+import { hashFile } from './utils/hasher';
+
 export class CrunchReport {
   constructor(private dirPath: string) {
     this.report = {};
@@ -17,13 +19,19 @@ export class CrunchReport {
       recursive: true,
     });
 
-    entries.forEach((entry: fs.Dirent) => {
+    for (const entry of entries) {
       if (entry.isFile()) {
-        console.log(path.resolve(entry.path, entry.name));
-      }
-    });
+        const absPath = path.resolve(entry.path, entry.name);
+        const hash = await hashFile(absPath);
 
-    this.report['asdf'] = ['asdf', 'asdf'];
+        if (!this.report[hash]) {
+          this.report[hash] = [];
+        }
+        this.report[hash].push(absPath);
+      }
+    }
+
+    console.log(this.report);
   }
 
   private async isDirectory(): Promise<boolean> {
