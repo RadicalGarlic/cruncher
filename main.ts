@@ -1,5 +1,6 @@
 import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
+import * as path from 'node:path';
 
 async function main() {
   if (process.argv.length < 3) {
@@ -13,7 +14,7 @@ async function main() {
 
   entries.forEach((entry: fs.Dirent) => {
     if (entry.isFile()) {
-      console.log(`${entry.path}/${entry.name}`);
+      console.log(path.resolve(entry.path, entry.name));
     }
   });
 }
