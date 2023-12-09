@@ -2,8 +2,6 @@ import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
 
-import { fullRead } from './file-full-read';
-
 export type Algorithm = 'sha1';
 
 export type OutputFormat = 'hex';
@@ -28,28 +26,15 @@ export async function hashFile(
     throw new Error(`Cannot hash non-file '${path}`);
   }
 
-  const handle: fsPromises.FileHandle = await fsPromises.open(path);
-  try {
-    const fileLen = stats.size;
-    const BUF_LEN = 4096;
-    const hasher: crypto.Hash = crypto.createHash(alg);
-    let readBytes = 0;
-    while (readBytes < fileLen) {
-      const buf: Buffer = await fullRead(
-        handle,
-        readBytes,
-        Math.min(BUF_LEN, fileLen - readBytes)
+  return new Promise<string>((resolve, reject) => {
+    fsPromises.open(path).then((handle: fsPromises.FileHandle) => {
+      const hasher: crypto.Hash = crypto.createHash(alg);
+      const readStream: fs.ReadStream = handle.createReadStream(
+        { autoClose: true }
       );
-      hasher.update(buf);
-      readBytes += buf.byteLength;
-    }
-
-    if (readBytes !== fileLen) {
-      throw new Error(`Byte length mismatch in hashFile(${path}), ${readBytes}, ${fileLen}`);
-    }
-
-    return hasher.digest(outputFormat);
-  } finally {
-    await handle.close();
-  }
+      readStream.on('data', (chunk: string | Buffer) => hasher.update(chunk));
+      readStream.on('end', () => resolve(hasher.digest(outputFormat)));
+      readStream.on('error', (err: Error) => reject(err));
+    }).catch(reason => reject(reason));
+  });
 }

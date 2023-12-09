@@ -23,7 +23,6 @@ export class CrunchReport {
       if (entry.isFile()) {
         const absPath = path.resolve(entry.path, entry.name);
         const hash = await hashFile(absPath);
-
         if (!this.report[hash]) {
           this.report[hash] = [];
         }
