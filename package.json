@@ -2,7 +2,7 @@
   "name": "cruncher",
   "version": "1.0.0",
   "description": "CLI tool for diffing and deduping files/directories",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "build": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
