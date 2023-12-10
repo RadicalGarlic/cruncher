@@ -37,5 +37,5 @@ export class CrunchReport {
     return (await fsPromises.stat(this.dirPath)).isDirectory();
   }
 
-  private report: { [key: string]: string[] };
+  private report: Record<string, string[]>;
 }
