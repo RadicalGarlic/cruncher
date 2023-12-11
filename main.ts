@@ -22,8 +22,11 @@ async function main() {
     const outerDirPath: string = process.argv[4];
     const innerDirPath: string = process.argv[5];
 
-    const cruncher = new CrunchReport(outerDirPath);
-    cruncher.generate();
+    const outerCrunch = await CrunchReport.generate(outerDirPath);
+    const innerCrunch = await CrunchReport.generate(innerDirPath);
+
+    console.log(outerCrunch);
+    console.log(innerCrunch);
   } else {
     console.log(getUsageMsg());
   }

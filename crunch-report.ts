@@ -3,18 +3,18 @@ import * as fsPromises from 'node:fs/promises';
 import * as path from 'node:path';
 
 import { hashFile } from './utils/hasher';
+import { isDirectory } from './utils/filesystem';
 
 export class CrunchReport {
-  constructor(private dirPath: string) {
-    this.report = {};
-  }
+  private contructor() { }
 
-  async generate() {
-    if (!this.isDirectory()) {
-      throw new Error(`Refusing to crunch non-directory '${this.dirPath}'`)
+  static async generate(dirPath: string): Promise<Record<string, string[]>> {
+    if (!isDirectory(dirPath)) {
+      throw new Error(`Refusing to crunch non-directory '${dirPath}'`)
     }
 
-    const entries: fs.Dirent[] = await fsPromises.readdir(this.dirPath, {
+    const report: Record<string, string[]> = {};
+    const entries: fs.Dirent[] = await fsPromises.readdir(dirPath, {
       withFileTypes: true,
       recursive: true,
     });
@@ -23,19 +23,13 @@ export class CrunchReport {
       if (entry.isFile()) {
         const absPath = path.resolve(entry.path, entry.name);
         const hash = await hashFile(absPath);
-        if (!this.report[hash]) {
-          this.report[hash] = [];
+        if (!report[hash]) {
+          report[hash] = [];
         }
-        this.report[hash].push(absPath);
+        report[hash].push(absPath);
       }
     }
 
-    console.log(this.report);
+    return report;
   }
-
-  private async isDirectory(): Promise<boolean> {
-    return (await fsPromises.stat(this.dirPath)).isDirectory();
-  }
-
-  private report: Record<string, string[]>;
 }
