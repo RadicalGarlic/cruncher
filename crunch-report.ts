@@ -14,7 +14,7 @@ export class CrunchReport {
       throw new Error(`Refusing to crunch non-directory '${this.dirPath}'`)
     }
 
-    const entries: fs.Dirent[] = await fsPromises.readdir(process.argv[2], {
+    const entries: fs.Dirent[] = await fsPromises.readdir(this.dirPath, {
       withFileTypes: true,
       recursive: true,
     });
