@@ -25,8 +25,14 @@ async function main() {
     const outerCrunch = await CrunchReport.generate(outerDirPath);
     const innerCrunch = await CrunchReport.generate(innerDirPath);
 
-    console.log(outerCrunch);
-    console.log(innerCrunch);
+    const missing: Record<string, string[]> = {};
+    for (const key in innerCrunch) {
+      if (!outerCrunch[key] || outerCrunch[key].length === 0) {
+        missing[key] = innerCrunch[key];
+      }
+    }
+
+    console.log(missing);
   } else {
     console.log(getUsageMsg());
   }
