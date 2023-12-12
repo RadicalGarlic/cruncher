@@ -32,7 +32,7 @@ async function main() {
       }
     }
 
-    console.log(missing);
+    console.log(JSON.stringify(missing, null, 2));
   } else {
     console.log(getUsageMsg());
   }
