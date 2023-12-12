@@ -27,7 +27,7 @@ async function main() {
 
     const missing: Record<string, string[]> = {};
     for (const key in innerCrunch) {
-      if (!outerCrunch[key] || outerCrunch[key].length === 0) {
+      if (!outerCrunch[key] || (outerCrunch[key].length === 0)) {
         missing[key] = innerCrunch[key];
       }
     }
