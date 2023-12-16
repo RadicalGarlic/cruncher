@@ -1,5 +1,6 @@
 import * as os from 'node:os';
 import * as path from 'node:path';
+import * as fsPromises from 'node:fs/promises';
 
 import { CrunchReport } from './crunch-report';
 import { throwExpression } from './utils/utils';
@@ -11,7 +12,6 @@ function getUsageMsg(): string {
 }
 
 async function main() {
-  console.log(process.argv[33]);
   if (process.argv.length < 3) {
     console.log(getUsageMsg());
     return;
@@ -31,8 +31,16 @@ async function main() {
     }
 
     if (args.getMergeDirPath()) {
-      // create some dir
-      // copy all files
+      for (const key in missing) {
+        for (const keyPath of missing[key]) {
+          const dstCopyPath = path.join(args.getMergeDirPath(), keyPath);
+          await fsPromises.mkdir(
+            path.dirname(dstCopyPath),
+            { recursive: true }
+          );
+          await fsPromises.copyFile(keyPath, dstCopyPath);
+        }
+      }
     }
 
     console.log(JSON.stringify(missing, null, 2));
