@@ -3,13 +3,16 @@ import * as fsPromises from 'node:fs/promises';
 import * as path from 'node:path';
 
 import { hashFile } from './utils/hasher';
-import { isDirectory } from './utils/filesystem';
+import { FileSystem } from './utils/filesystem';
 
 export class CrunchReport {
   private contructor() { }
 
-  static async generate(dirPath: string): Promise<Record<string, string[]>> {
-    if (!isDirectory(dirPath)) {
+  static async generate(
+    dirPath: string,
+    fsUtil = new FileSystem()
+  ): Promise<Record<string, string[]>> {
+    if (!(await fsUtil.isDirectory(dirPath))) {
       throw new Error(`Refusing to crunch non-directory '${dirPath}'`)
     }
 
