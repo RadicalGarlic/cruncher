@@ -27,7 +27,7 @@ export class ContainsArgs {
         this.innerDirPath = args[i + 1] ?? throwExpression('--inner arg not given');
         i += 2;
       } else {
-        throw new Error('Unknown arg');
+        throw new Error(`Unknown arg ${args[i]}`);
       }
     }
 
