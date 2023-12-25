@@ -9,8 +9,8 @@ describe('contains-args', () => {
       '--outer', 'outDir',
       '--inner', 'inDir'
     ]);
-    expect(args.getMergeDirPath() === 'mergeDir');
-    expect(args.getOuterDirPath() === 'outDir');
-    expect(args.getInnerDirPath() === 'inDir');
+    expect(args.getMergeDirPath()).toEqual('mergeDir');
+    expect(args.getOuterDirPath()).toEqual('outDir');
+    expect(args.getInnerDirPath()).toEqual('inDir');
   });
 });
